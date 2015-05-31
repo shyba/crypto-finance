@@ -17,5 +17,6 @@ setup(name='crypto-finance',
           'Twisted==15.2.0'
       ],
       tests_require=[
+          'mock',
       ],
       )
