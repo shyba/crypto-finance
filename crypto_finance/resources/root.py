@@ -1,7 +1,7 @@
 from twisted.web.resource import Resource
 
 
-class CryptoFinanceRootResource(Resource):
+class RootResource(Resource):
 
     def getChild(self, path, request):
         if path == '':
