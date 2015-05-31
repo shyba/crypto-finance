@@ -1,20 +1,23 @@
 from twisted.web.resource import Resource
+from json import dumps
 
 
 class AuthResource(Resource):
     isLeaf = True
 
+    def __init__(self, authenticator):
+        self.authenticator = authenticator
+
     def render_POST(self, request):
-        if not self._check_params(request.args):
-            request.setResponseCode(404)
-        else:
-            # call leap.auth and keep credentials
-            request.setResponseCode(200)
+        request.setResponseCode(200)
+        return dumps(self._auth(request.args))
 
-        return ""
-
-    def _check_params(self, args):
+    def _auth(self, args):
         has_user = len(args.get('username', '')) > 5
         has_pass = len(args.get('password', '')) > 5
         nothing_more = len(args.keys()) == 2
-        return has_user and has_pass and nothing_more
+        if has_user and has_pass and nothing_more:
+            self.authenticator(args.values())
+            return {'status': 'success'}
+        else:
+            return {'status': 'failure'}

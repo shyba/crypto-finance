@@ -1,16 +1,19 @@
 from twisted.trial.unittest import TestCase
+from mock import Mock
 from twisted.web.test.test_web import DummyRequest
 from twisted.web.http import OK, NOT_FOUND
 
-from crypto_finance.resources import app_site
+from crypto_finance.resources import make_site
 
 
 def make_request(uri='', method='GET', args={}):
+    site = make_site(authenticator=Mock())
     request = DummyRequest(uri.split('/'))
     request.method = method
     request.args = args
-    resource = app_site.getResourceFor(request)
+    resource = site.getResourceFor(request)
     request.render(resource)
+    request.data = "".join(request.written)
     return request
 
 
@@ -29,8 +32,17 @@ class RootResourceResponseCodesTestCase(TestCase):
 
 class AuthResourceTestCase(TestCase):
 
-    def test_auth_resource_ok_with_good_parameters(self):
-        args = {'username': 'myself', 'password': 'somethingawesome'}
-        request = make_request(uri='/auth/', method='POST', args=args)
+    def _try_auth(self, credentials, expected):
+        request = make_request(uri='/auth/', method='POST', args=credentials)
 
         self.assertEquals(request.responseCode, OK)
+        self.assertEquals(request.data, expected)
+
+    def test_auth_success_with_good_parameters(self):
+        credentials = {'username': 'myself', 'password': 'somethingawesome'}
+        self._try_auth(credentials, '{"status": "success"}')
+
+    def test_auth_failure_with_missing_parameters(self):
+        credentials = {'username': 'myself', 'password': 'somethingawesome'}
+        for (k, v) in credentials.items():
+            self._try_auth({k: v}, '{"status": "failure"}')
