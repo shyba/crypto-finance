@@ -14,7 +14,8 @@ setup(name='crypto-finance',
       ],
       test_suite='crypto_finance.tests',
       install_requires=[
-          'Twisted==15.2.0'
+          'Twisted==15.2.0',
+          'leap.auth'
       ],
       tests_require=[
           'mock',
