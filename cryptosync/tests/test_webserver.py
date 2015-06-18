@@ -3,7 +3,7 @@ from mock import Mock
 from twisted.web.test.test_web import DummyRequest
 from twisted.web.http import OK, NOT_FOUND
 
-from crypto_finance.resources import make_site
+from cryptosync.resources import make_site
 
 
 def make_request(uri='', method='GET', args={}):

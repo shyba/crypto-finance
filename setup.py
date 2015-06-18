@@ -2,17 +2,17 @@
 
 from setuptools import setup
 
-setup(name='crypto-finance',
+setup(name='cryptosync',
       version='0.1',
-      description='Soledad encrypted synchronized\
-                  local webapp for personal finance',
+      description='Personal experiments to sync encrypted data.\
+                   Don\'t use it for real world stuff yet.',
       author='Victor Shyba',
       author_email='victor1984@riseup.net',
-      url='https://github.com/shyba/crypto-finance',
+      url='https://github.com/shyba/cryptosync',
       packages=[
-          'crypto_finance'
+          'cryptosync'
       ],
-      test_suite='crypto_finance.tests',
+      test_suite='cryptosync.tests',
       install_requires=[
           'Twisted==15.2.0',
           'leap.auth'

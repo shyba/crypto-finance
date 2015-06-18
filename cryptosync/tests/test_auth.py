@@ -1,5 +1,5 @@
 from twisted.trial.unittest import TestCase
-from crypto_finance.sync import auth
+from cryptosync.sync import auth
 from mock import patch
 from mock import Mock
 
