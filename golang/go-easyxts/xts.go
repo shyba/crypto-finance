@@ -1,4 +1,4 @@
-package main
+package xts
 
 import "golang.org/x/crypto/xts"
 import "crypto/aes"
@@ -27,8 +27,8 @@ func NewDevice(key []byte, sectorSize uint64, sectorTotal uint64) (x *XTSDevice,
 			return nil, err
 		}
 	} else {
-		if len(key) != 32 {
-			err := errors.New(fmt.Sprintf("Key is expected to have length 32, got %d", len(key)))
+		if len(key) != 32 && len(key) != 64 {
+			err := errors.New(fmt.Sprintf("Key is expected to have length 32 or 64, got %d", len(key)))
 			return nil, err
 		}
 	}
