@@ -65,7 +65,7 @@ func TestXTSEncryptDecryptFromOriginalRFCCheck(t *testing.T) {
 		if err != nil {
 			t.Errorf("#%d, Error creating a XTSDevice: %s", i, err)
 		}
-		ciphertext, err := device.Encrypt(fromHex(test.plaintext), 0)
+		ciphertext, err := device.Encrypt(fromHex(test.plaintext), test.sector)
 		if err != nil {
 			t.Errorf("#%d, Error during encrypt: %s", i, err)
 		}
@@ -75,7 +75,7 @@ func TestXTSEncryptDecryptFromOriginalRFCCheck(t *testing.T) {
 			continue
 		}
 
-		decrypted, err := device.Decrypt(ciphertext, 0)
+		decrypted, err := device.Decrypt(ciphertext, test.sector)
 		if err != nil {
 			t.Errorf("#%d, Error during decrypt: %s", i, err)
 		}
