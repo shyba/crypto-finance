@@ -2,6 +2,7 @@ package xts
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/hex"
 	"testing"
 )
@@ -83,4 +84,39 @@ func TestXTSEncryptDecryptFromOriginalRFCCheck(t *testing.T) {
 			t.Errorf("#%d: decryption failed, got: %x, want: %x", i, decrypted, fromHex(test.plaintext))
 		}
 	}
+}
+
+//Yet using full blocks without ciphertext stealing, to be implemented
+//20 random messages across 20 sectors sized 16 bytes
+func TestXTSMultipleDistinctSectorsEncryptDecrypt(t *testing.T) {
+	sectorTotal := uint64(20)
+	key := fromHex("bebacafe1337cafe235360287471352631415926535897932384626433832795")
+	sectorSize := uint64(16)
+	device, err := NewDevice(key, sectorSize, sectorTotal)
+	if err != nil {
+		t.Errorf("TestXTSMultiple, Error creating a XTSDevice: %s", err)
+	}
+	ciphertext := make([]byte, sectorSize*sectorTotal)
+	messages := make([][]byte, sectorTotal)
+	for i := 0; i < 20; i++ {
+		messages[i] = make([]byte, sectorSize)
+		if _, err = rand.Read(messages[i]); err != nil {
+			t.Errorf("Error on crypto/read %s", err)
+		}
+		result, err := device.Encrypt(messages[i], uint64(i))
+		if err != nil {
+			t.Errorf("TestXTSMultiple, Error during encrypt: %s", err)
+		}
+		copy(ciphertext[i*16:i*16+16], result)
+	}
+	for i := 20; i < 20; i++ {
+		plaintext, err := device.Decrypt(ciphertext[i*16:i*16+16], uint64(i))
+		if err != nil {
+			t.Errorf("TestXTSMultiple, Error during decrypt: %s", err)
+		}
+		if !bytes.Equal(plaintext, messages[i]) {
+			t.Errorf("Failed to decrypt message #%d, got %x, want %x", i, plaintext, messages[i])
+		}
+	}
+
 }
