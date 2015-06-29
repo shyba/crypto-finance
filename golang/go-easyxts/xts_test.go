@@ -60,7 +60,7 @@ func TestXTSEncryptDecryptFromOriginalRFCCheck(t *testing.T) {
 	for i, test := range xtsTestVectors {
 		sectorTotal := uint64(1)
 		key := fromHex(test.key)
-		sectorSize := uint64(len(test.plaintext))
+		sectorSize := uint64(len(fromHex(test.plaintext)))
 		device, err := NewDevice(key, sectorSize, sectorTotal)
 		if err != nil {
 			t.Errorf("#%d, Error creating a XTSDevice: %s", i, err)
